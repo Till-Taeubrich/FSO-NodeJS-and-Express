@@ -30,3 +30,7 @@ const persons = [
 app.get('/api/persons', (request, response) => {
   response.send(persons)
 })
+
+app.get('/info', (request, response) => {
+  response.send(`<div>Phonebook has info for ${persons.length} people</div> <div>${new Date()}</div>`)
+})
