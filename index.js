@@ -7,6 +7,16 @@ const { default: mongoose } = require('mongoose')
 const app = express()
 const port = process.env.PORT || 3001
 
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message)
+
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'malformatted id' })
+  } 
+
+  next(error)
+}
+
 app.use(cors())
 app.use(express.static('build'))
 app.use(express.json())
@@ -66,17 +76,17 @@ app.get('/api/persons/:id', (request, response) => {
   response.send(person)
 })
 
-app.delete('/api/persons/:id', (request, response) => {
+app.delete('/api/persons/:id', (request, response, next) => {
   Person.findByIdAndRemove(request.params.id)
     .then(res => {
       response.status(204).end()
     })
     .catch(err => {
-      console.log(err)
+      next(err)
     })
 })
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
 
   const data = request.body;
 
@@ -85,8 +95,15 @@ app.post('/api/persons', (request, response) => {
     number: data.number,
   })
 
-  newPerson.save().then(() => mongoose.connection.close())
-
-  response.json(newPerson)
+  newPerson.save()
+    .then(() => {
+    mongoose.connection.close()
+    response.json(newPerson)
+    })
+    .catch((err) => {
+      next(err)
+    })
 
 })
+
+app.use(errorHandler)
