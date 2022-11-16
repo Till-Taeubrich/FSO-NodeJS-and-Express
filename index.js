@@ -2,6 +2,7 @@ const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
 const Person = require('./models/person')
+const { default: mongoose } = require('mongoose')
 
 const app = express()
 const port = process.env.PORT || 3001
@@ -72,34 +73,16 @@ app.delete('/api/persons/:id', (request, response) => {
 })
 
 app.post('/api/persons', (request, response) => {
-  const data = request.body
-  const personExists = persons.find(person => person.name === data.name)
 
-  if (!data.name) {
-    return response.status(404).json({
-      error: 'name is missing'
-    })
-  }
+  const data = request.body;
 
-  if (!data.number) {
-    return response.status(404).json({
-      error: 'number is missing'
-    })
-  }
-
-  if (personExists) {
-    return response.status(404).json({
-      error: 'person already exists'
-    })
-  }
-
-  const newPerson = {
-    id: (Math.random() * 10000000),
+  const newPerson = new Person({
     name: data.name,
-    number: data.number
-  }
+    number: data.number,
+  })
 
-  persons = persons.concat(newPerson)
+  newPerson.save().then(() => mongoose.connection.close())
 
   response.json(newPerson)
+
 })
