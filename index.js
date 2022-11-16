@@ -100,9 +100,22 @@ app.post('/api/persons', (request, response, next) => {
     mongoose.connection.close()
     response.json(newPerson)
     })
-    .catch((err) => {
-      next(err)
+    .catch((err) => next(err))
+})
+
+app.put('/api/persons/:id', (request, response, next) => {
+
+  const newNumber = request.body.number;
+
+  const newPersonData = {
+    number: newNumber 
+  }
+
+  Person.findByIdAndUpdate(request.params.id, newPersonData, { new: true })
+    .then((res) => {
+      response.json(res)
     })
+    .catch(err => next(err))
 
 })
 
