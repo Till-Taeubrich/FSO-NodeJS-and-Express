@@ -10,7 +10,7 @@ const password = process.argv[2];
 const url = `mongodb+srv://Phonebook:${password}@phonebook.vtcp2i5.mongodb.net/?retryWrites=true&w=majority`
 
 const personSchema = new mongoose.Schema({
-  naming: String,
+  name: String,
   number: Number, 
 })
 
@@ -37,7 +37,7 @@ mongoose
   .connect(url)
   .then(() => {
     const person = new Person({
-      naming: process.argv[3],
+      name: process.argv[3],
       number: process.argv[4]
     })
 

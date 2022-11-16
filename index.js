@@ -1,6 +1,7 @@
 const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
+const Person = require('./models/person')
 
 const app = express()
 const port = process.env.PORT || 3001
@@ -46,7 +47,9 @@ let persons = [
 ]
 
 app.get('/api/persons', (request, response) => {
-  response.send(persons)
+  Person.find({}).then(person => {
+    response.json(person)
+  })
 })
 
 app.get('/info', (request, response) => {
