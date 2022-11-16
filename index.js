@@ -64,16 +64,23 @@ app.get('/api/persons', (request, response) => {
 })
 
 app.get('/info', (request, response) => {
-  response.send(`<div>Phonebook has info for ${persons.length} people</div> <div>${new Date()}</div>`)
+
+  Person.find({}).then(person => {
+    response.send(`<div>Phonebook has info for ${person.length} people</div> <div>${new Date()}</div>`)
+  })
+
 })
 
-app.get('/api/persons/:id', (request, response) => {
-  const id = Number(request.params.id)
-  const person = persons.find(person => person.id === id)
-  if (!person) {
-    response.status(404).end()
-  }
-  response.send(person)
+app.get('/api/persons/:id', (request, response, err) => {
+  Person.findById(request.params.id)
+    .then(person => {
+      if (person) {
+        response.send(person)
+      } else {
+        response.status(404).end()
+      }
+    })
+    .catch(err => next(err))
 })
 
 app.delete('/api/persons/:id', (request, response, next) => {
