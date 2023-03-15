@@ -61,6 +61,7 @@ app.get('/api/persons', (request, response) => {
   Person.find({}).then(person => {
     response.json(person)
   })
+      .catch(e => console.warn(`ERROR FETCHING DATA ${ e.message }`))
 })
 
 app.get('/info', (request, response) => {
@@ -104,8 +105,7 @@ app.post('/api/persons', (request, response, next) => {
 
   newPerson.save()
     .then(() => {
-    mongoose.connection.close()
-    response.json(newPerson)
+      response.json(newPerson)
     })
     .catch((err) => next(err))
 })
