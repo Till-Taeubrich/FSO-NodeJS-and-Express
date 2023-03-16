@@ -2,7 +2,6 @@ const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
 const Person = require('./models/person')
-const { default: mongoose } = require('mongoose')
 
 const app = express()
 const port = process.env.PORT || 3001
@@ -34,34 +33,12 @@ app.use(morgan((tokens, req, res) => {
 
 app.listen(port)
 
-let persons = [
-  {
-    "id": 1,
-    "name": "Arto Hellas",
-    "number": "040-123456"
-  },
-  {
-    "id": 2,
-    "name": "Ada Lovelace",
-    "number": "39-44-5323523"
-  },
-  {
-    "id": 3,
-    "name": "Dan Abramov",
-    "number": "12-43-234345"
-  },
-  {
-    "id": 4,
-    "name": "Mary Poppendieck",
-    "number": "39-23-6423122"
-  }
-]
-
 app.get('/api/persons', (request, response) => {
-  Person.find({}).then(person => {
-    response.json(person)
-  })
-      .catch(e => console.warn(`ERROR FETCHING DATA ${ e.message }`))
+  Person
+    .find({}).then(person => {
+      response.json(person)
+    })
+    .catch(e => console.warn(`ERROR FETCHING DATA ${ e.message }`))
 })
 
 app.get('/info', (request, response) => {
@@ -72,7 +49,7 @@ app.get('/info', (request, response) => {
 
 })
 
-app.get('/api/persons/:id', (request, response, err) => {
+app.get('/api/persons/:id', (request, response) => {
   Person.findById(request.params.id)
     .then(person => {
       if (person) {
@@ -86,7 +63,7 @@ app.get('/api/persons/:id', (request, response, err) => {
 
 app.delete('/api/persons/:id', (request, response, next) => {
   Person.findByIdAndRemove(request.params.id)
-    .then(res => {
+    .then(() => {
       response.status(204).end()
     })
     .catch(err => {
@@ -96,7 +73,7 @@ app.delete('/api/persons/:id', (request, response, next) => {
 
 app.post('/api/persons', (request, response, next) => {
 
-  const data = request.body;
+  const data = request.body
 
   const newPerson = new Person({
     name: data.name,
@@ -112,7 +89,7 @@ app.post('/api/persons', (request, response, next) => {
 
 app.put('/api/persons/:id', (request, response, next) => {
 
-  const newNumber = request.body.number;
+  const newNumber = request.body.number
 
   const newPersonData = {
     number: newNumber 

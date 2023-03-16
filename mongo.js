@@ -5,7 +5,7 @@ if (process.argv.length < 3) {
   process.exit(1)
 }
 
-const password = process.argv[2];
+const password = process.argv[2]
 
 const url = `mongodb+srv://Phonebook:${password}@phonebook.vtcp2i5.mongodb.net/?retryWrites=true&w=majority`
 
@@ -26,12 +26,12 @@ if (process.argv.length === 3){
           persons.forEach(person => {
             console.log(person)
             return mongoose.connection.close()
+          })
         })
-      })
     })
     .catch((err) => console.log(err))
-    return
-  }
+  return
+}
 
 mongoose
   .connect(url)
@@ -41,7 +41,7 @@ mongoose
       number: process.argv[4]
     })
 
-    return person.save();
+    return person.save()
   })
 
   .then(() => {
